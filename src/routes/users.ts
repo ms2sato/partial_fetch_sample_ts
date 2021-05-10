@@ -3,6 +3,7 @@ const router = express.Router()
 
 import pug from 'pug'
 import path from 'path'
+import multer from 'multer'
 
 let titleCounter = 0
 const messages: string[] = [
@@ -13,7 +14,7 @@ const messages: string[] = [
 /* GET users listing. */
 router.get(
   "/",
-  async function (
+  function (
     _req: express.Request,
     res: express.Response,
     _next: express.NextFunction,
@@ -34,7 +35,9 @@ class PartialRenderer {
   }
 
   add(selector: string, view: string, options = {}) {
-    const templatePath = path.join(this.req.app.settings.views, view)
+    const viewPath = (this.req.app.settings as Record<string, string>).views
+
+    const templatePath = path.join(viewPath, view)
     const html = pug.renderFile(templatePath, options)
     this.ret.partials[selector] = html
   }
@@ -44,7 +47,7 @@ class PartialRenderer {
   }
 }
 
-router.get('/time', async function (
+router.get('/time', function (
   req: express.Request,
   res: express.Response,
   _next: express.NextFunction
@@ -54,7 +57,7 @@ router.get('/time', async function (
   renderer.render()
 })
 
-router.get('/title', async function (
+router.get('/title', function (
   req: express.Request,
   res: express.Response,
   _next: express.NextFunction
@@ -64,7 +67,7 @@ router.get('/title', async function (
   renderer.render()
 })
 
-router.get('/multi', async function (
+router.get('/multi', function (
   req: express.Request,
   res: express.Response,
   _next: express.NextFunction
@@ -75,7 +78,7 @@ router.get('/multi', async function (
   renderer.render()
 })
 
-router.post('/messages', async function (
+router.post('/messages', multer({ dest: '/tmp/' }).single('file'), function (
   req: express.Request,
   res: express.Response,
   _next: express.NextFunction
@@ -83,13 +86,14 @@ router.post('/messages', async function (
   console.log(req.body)
   console.log(req.params)
 
-  const message = req.body.message
+  const message = (req.body as Record<string, string>).message
   messages.push(message)
 
   console.log(message)
 
   const renderer = new PartialRenderer(req, res)
   renderer.add('ul', '/user/message.pug', { message })
+  renderer.add('form', '/user/form.pug')
   renderer.render()
 })
 

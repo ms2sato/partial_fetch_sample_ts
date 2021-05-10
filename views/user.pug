@@ -11,13 +11,7 @@ block content
 
   h2 フォーム
 
-  form(
-    action="/users/messages",
-    method="post",
-    onSubmit="event.preventDefault();"
-  )
-    input(name="message") 
-    input(type="submit", onClick="partial('/users/messages', 'ul', 'appendChild', { method: 'post', body: new FormData(this.form), headers: new Headers({'Content-Type', 'application/x-www-form-urlencoded'}) });")
+  include ./user/form
 
   ul
     each message in messages

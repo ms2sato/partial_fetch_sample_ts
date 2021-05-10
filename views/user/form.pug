@@ -1,0 +1,7 @@
+form(
+  action="/users/messages",
+  method="post",
+  onSubmit="event.preventDefault();partialForm(this, [['ul', 'appendChild'], ['form', 'replace']]);"
+)
+  input(name="message") 
+  input(type="submit")
