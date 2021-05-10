@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  include ./user/title
+
+  button(onClick="partial('/users/time', '#output')") 押すとtime更新
+  button(onClick="partial('/users/multi', [['#output', 'inner'], ['#title', 'replace']])") 押すとマルチ更新
+
+  #output
+    include ./user/time
+
+  h2 フォーム
+
+  form(
+    action="/users/messages",
+    method="post",
+    onSubmit="event.preventDefault();"
+  )
+    input(name="message") 
+    input(type="submit", onClick="partial('/users/messages', 'ul', 'appendChild', { method: 'post', body: new FormData(this.form), headers: new Headers({'Content-Type', 'application/x-www-form-urlencoded'}) });")
+
+  ul
+    each message in messages
+      include ./user/message
