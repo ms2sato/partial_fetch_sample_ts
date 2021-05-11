@@ -57,7 +57,7 @@ router.post('/messages', (
   if (!message || message.length === 0) {
     return partials
       .add('form', '/user/form.pug', {
-        message, err: { errors: [{ message: 'メッセージが空です' }] }
+        message, err: { errors: [{ message: 'メッセージは必須です' }] }
       })
       .render()
   }
