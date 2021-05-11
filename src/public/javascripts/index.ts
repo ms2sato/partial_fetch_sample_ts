@@ -41,7 +41,6 @@ async function partial(
   const res = await fetch(path, options)
   const { effects } = await res.json() as Protocol
   for (const [selector, effect] of Object.entries(effects)) {
-    console.log(selector)
     const {html, action} = effect
 
     const actionFunc: Action = actions[action as ActionNames]
