@@ -50,9 +50,11 @@ async function partial(
   const res = await fetch(path, options)
   const { partials } = await res.json() as Record<string, Record<string, string>>
   for (const [selector, actionName] of selectorActionPairs) {
+    console.log(partials)
+    console.log(selector)
     const html = partials[selector]
     if (!html) {
-      console.debug(`${selector} is not found in a server response`)
+      console.debug(`"${selector}" is not found in a server response`)
       continue
     }
 

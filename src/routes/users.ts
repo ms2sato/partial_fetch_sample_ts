@@ -1,9 +1,6 @@
 import express from "express"
 const router = express.Router()
 
-import pug from 'pug'
-import path from 'path'
-
 let titleCounter = 0
 const messages: string[] = [
   'テスト1',
@@ -22,73 +19,58 @@ router.get(
   },
 );
 
-class PartialRenderer {
-  private req: express.Request
-  private res: express.Response
-  private ret: Record<string, Record<string, string>>
-
-  constructor(req: express.Request, res: express.Response) {
-    this.req = req
-    this.res = res
-    this.ret = { partials: {} }
-  }
-
-  add(selector: string, view: string, options = {}) {
-    const viewPath = (this.req.app.settings as Record<string, string>).views
-
-    const templatePath = path.join(viewPath, view)
-    const html = pug.renderFile(templatePath, options)
-    this.ret.partials[selector] = html
-  }
-
-  render() {
-    this.res.json(this.ret)
-  }
-}
-
 router.get('/time', function (
   req: express.Request,
-  res: express.Response,
+  _res: express.Response,
   _next: express.NextFunction
 ) {
-  const renderer = new PartialRenderer(req, res)
-  renderer.add('#output', '/user/time.pug')
-  renderer.render()
+  req.partials()
+    .add('#output', '/user/time.pug')
+    .render()
 })
 
 router.get('/title', function (
   req: express.Request,
-  res: express.Response,
+  _res: express.Response,
   _next: express.NextFunction
 ) {
-  const renderer = new PartialRenderer(req, res)
-  renderer.add('#title', '/user/title.pug', { titleCounter: titleCounter++ })
-  renderer.render()
+  req.partials()
+    .add('#title', '/user/title.pug', { titleCounter: titleCounter++ })
+    .render()
 })
 
 router.get('/multi', function (
   req: express.Request,
-  res: express.Response,
+  _res: express.Response,
   _next: express.NextFunction
 ) {
-  const renderer = new PartialRenderer(req, res)
-  renderer.add('#output', '/user/time.pug')
-  renderer.add('#title', '/user/title.pug', { titleCounter: titleCounter++ })
-  renderer.render()
+  req.partials()
+    .add('#output', '/user/time.pug')
+    .add('#title', '/user/title.pug', { titleCounter: titleCounter++ })
+    .render()
 })
 
 router.post('/messages', function (
   req: express.Request,
-  res: express.Response,
+  _res: express.Response,
   _next: express.NextFunction
 ) {
   const message = (req.body as Record<string, string>).message
+  const partials = req.partials()
+  if(!message || message.length === 0) {
+    return partials
+      .add('form', '/user/form.pug', { 
+        message, err: { errors: [{ message: 'メッセージが空です' }] } 
+      })
+      .render()
+  }
+
   messages.push(message)
 
-  const renderer = new PartialRenderer(req, res)
-  renderer.add('ul', '/user/message.pug', { message })
-  renderer.add('form', '/user/form.pug')
-  renderer.render()
+  partials
+    .add('ul.messages', '/user/message.pug', { message })
+    .add('form', '/user/form.pug')
+    .render()
 })
 
 export default router;

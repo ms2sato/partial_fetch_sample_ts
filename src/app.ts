@@ -8,6 +8,8 @@ import { default as logger } from "morgan"
 import d from 'debug'
 const debug: d.Debugger = d.debug('simple-bbs:server:params')
 
+import { partialRenderer } from './lib/partial_renderer'
+
 import { default as indexRouter } from "./routes/index"
 import { default as usersRouter } from "./routes/users"
 
@@ -41,6 +43,8 @@ app.use((
   next()
 })
 
+app.use(partialRenderer())
+
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
@@ -60,6 +64,8 @@ app.use(function (
   res: express.Response,
   _next: express.NextFunction,
 ) {
+  debug(err)
+
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
