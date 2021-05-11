@@ -31,6 +31,7 @@ module.exports = {
       {
         "checksVoidReturn": false
       }
-    ]
+    ],
+    "@typescript-eslint/ban-ts-comment": "off"
   }
 }

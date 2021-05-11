@@ -3,7 +3,6 @@ const router = express.Router()
 
 import pug from 'pug'
 import path from 'path'
-import multer from 'multer'
 
 let titleCounter = 0
 const messages: string[] = [
@@ -78,24 +77,18 @@ router.get('/multi', function (
   renderer.render()
 })
 
-router.post('/messages', multer({ dest: '/tmp/' }).single('file'), function (
+router.post('/messages', function (
   req: express.Request,
   res: express.Response,
   _next: express.NextFunction
 ) {
-  console.log(req.body)
-  console.log(req.params)
-
   const message = (req.body as Record<string, string>).message
   messages.push(message)
-
-  console.log(message)
 
   const renderer = new PartialRenderer(req, res)
   renderer.add('ul', '/user/message.pug', { message })
   renderer.add('form', '/user/form.pug')
   renderer.render()
 })
-
 
 export default router;

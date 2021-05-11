@@ -5,6 +5,8 @@ import { default as createError } from "http-errors"
 import path from "path";
 import cookieParser from "cookie-parser"
 import { default as logger } from "morgan"
+import d from 'debug'
+const debug: d.Debugger = d.debug('simple-bbs:server:params')
 
 import { default as indexRouter } from "./routes/index"
 import { default as usersRouter } from "./routes/users"
@@ -24,6 +26,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "./public")));
+
+app.use((
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  debug(`${req.method} ${req.path}`);
+  if (debug.enabled) {
+    debug(`req.params: %o`, req.params);
+    debug(`req.body: %o`, req.body);
+    debug(`req.query: %o`, req.query);
+  }
+  next()
+})
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

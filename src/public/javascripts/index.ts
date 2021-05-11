@@ -1,11 +1,15 @@
-interface Action {
-  (elm: HTMLElement, part: string): void
-}
-
 function textToNode(text: string) {
   const template = document.createElement("template")
   template.innerHTML = text
   return template.content
+}
+
+function getURLSearchParams(form: HTMLFormElement) {
+  return new URLSearchParams(new FormData(form) as any) // eslint-disable-line @typescript-eslint/no-explicit-any
+}
+
+interface Action {
+  (elm: HTMLElement, part: string): void
 }
 
 const actions = {
@@ -25,7 +29,12 @@ const actions = {
 
 type ActionNames = keyof typeof actions
 
-async function partial(path: string, selector: string | [[string, ActionNames]], actionName: ActionNames = "inner", options: RequestInit = {}) {
+async function partial(
+  path: string,
+  selector: string | [[string, ActionNames]],
+  actionName: ActionNames | RequestInit = "inner",
+  options: RequestInit = {}
+) {
   if (typeof actionName !== 'string') {
     options = actionName
     actionName = "inner"
@@ -43,23 +52,45 @@ async function partial(path: string, selector: string | [[string, ActionNames]],
   for (const [selector, actionName] of selectorActionPairs) {
     const html = partials[selector]
     if (!html) {
-      throw new Error(`${selector} is not found in a server response`)
+      console.debug(`${selector} is not found in a server response`)
+      continue
     }
 
     const action: Action = partial.actions[actionName]
     if (!action) {
-      throw new Error(`${actionName} is not found in partial actions`)
+      throw new Error(`${actionName} is not found in partial.actions`)
     }
     action(document.querySelector(selector) as HTMLElement, html)
   }
 }
 
-partial.actions = actions
+async function partialForm(
+  form: HTMLFormElement,
+  selector: string | [[string, ActionNames]],
+  actionName: ActionNames | RequestInit = "inner",
+  options: RequestInit = {}
+) {
+  return partial(form.action, selector, actionName, {
+    method: 'post',
+    body: getURLSearchParams(form),
+    ...options
+  })
+}
 
-async function partialForm(form: HTMLFormElement, selector: string | [[string, ActionNames]], actionName: ActionNames = "inner", options: RequestInit = {}) {
+async function partialFileForm(
+  form: HTMLFormElement,
+  selector: string | [[string, ActionNames]],
+  actionName: ActionNames | RequestInit = "inner",
+  options: RequestInit = {}
+) {
   return partial(form.action, selector, actionName, {
     method: 'post',
     body: new FormData(form),
     ...options
   })
 }
+
+partial.actions = actions
+partial.get = partial
+partial.form = partialForm
+partial.fileForm = partialFileForm
