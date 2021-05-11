@@ -22,6 +22,9 @@ const actions = {
   prependChild: function prependChild(_elm: HTMLElement, _part: string): void {
     throw new Error('Unimplemented');
   },
+  remove: function remove(_elm: HTMLElement, _part: string): void {
+    throw new Error('Unimplemented');
+  },
   replace: function replace(elm: HTMLElement, part: string) {
     elm.parentElement?.replaceChild(textToNode(part), elm)
   }
