@@ -3,8 +3,8 @@ extends layout
 block content
   include ./user/title
 
-  button(onClick="partial('/users/time', '#output')") 押すとtime更新
-  button(onClick="partial('/users/multi', [['#output', 'inner'], ['#title', 'replace']])") 押すとマルチ更新
+  button(onClick="partial('/users/time')") 押すとtime更新
+  button(onClick="partial('/users/multi')") 押すとマルチ更新
 
   #output
     include ./user/time

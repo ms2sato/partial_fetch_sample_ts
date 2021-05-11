@@ -1,3 +1,5 @@
+import { Protocol } from '../../lib/protocols'
+
 function textToNode(text: string) {
   const template = document.createElement("template")
   template.innerHTML = text
@@ -34,48 +36,32 @@ type ActionNames = keyof typeof actions
 
 async function partial(
   path: string,
-  selector: string | [[string, ActionNames]],
-  actionName: ActionNames | RequestInit = "inner",
   options: RequestInit = {}
 ) {
-  if (typeof actionName !== 'string') {
-    options = actionName
-    actionName = "inner"
-  }
-
-  let selectorActionPairs: [[string, ActionNames]]
-  if (selector instanceof Array) {
-    selectorActionPairs = selector
-  } else {
-    selectorActionPairs = [[selector, actionName]]
-  }
-
   const res = await fetch(path, options)
-  const { partials } = await res.json() as Record<string, Record<string, string>>
-  for (const [selector, actionName] of selectorActionPairs) {
-    console.log(partials)
+  const { effects } = await res.json() as Protocol
+  for (const [selector, effect] of Object.entries(effects)) {
     console.log(selector)
-    const html = partials[selector]
-    if (!html) {
-      console.debug(`"${selector}" is not found in a server response`)
-      continue
+    const {html, action} = effect
+
+    const actionFunc: Action = actions[action as ActionNames]
+    if (!action) {
+      throw new Error(`"${action}" is not found in partial.actions`)
     }
 
-    const action: Action = partial.actions[actionName]
-    if (!action) {
-      throw new Error(`${actionName} is not found in partial.actions`)
+    const element = document.querySelector(selector)
+    if(!element) {
+      throw new Error(`"${selector}" is not found in document`)
     }
-    action(document.querySelector(selector) as HTMLElement, html)
+    actionFunc(element as HTMLElement, html)
   }
 }
 
 async function partialForm(
   form: HTMLFormElement,
-  selector: string | [[string, ActionNames]],
-  actionName: ActionNames | RequestInit = "inner",
   options: RequestInit = {}
 ) {
-  return partial(form.action, selector, actionName, {
+  return partial(form.action, {
     method: 'post',
     body: getURLSearchParams(form),
     ...options
@@ -84,11 +70,9 @@ async function partialForm(
 
 async function partialFileForm(
   form: HTMLFormElement,
-  selector: string | [[string, ActionNames]],
-  actionName: ActionNames | RequestInit = "inner",
   options: RequestInit = {}
 ) {
-  return partial(form.action, selector, actionName, {
+  return partial(form.action, {
     method: 'post',
     body: new FormData(form),
     ...options

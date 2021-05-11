@@ -1,7 +1,7 @@
 form(
   action="/users/messages",
   method="post",
-  onSubmit="event.preventDefault();partial.form(this, [['ul.messages', 'appendChild'], ['form', 'replace']]);"
+  onSubmit="event.preventDefault();partial.form(this);"
 )
   - if(err) 
     ul.errors 

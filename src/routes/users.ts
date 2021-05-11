@@ -22,7 +22,7 @@ router.get('/time', (
   _next: express.NextFunction
 ) => {
   req.partials()
-    .add('#output', '/user/time.pug')
+    .inner('#output', '/user/time.pug')
     .render()
 })
 
@@ -32,7 +32,7 @@ router.get('/title', (
   _next: express.NextFunction
 ) => {
   req.partials()
-    .add('#title', '/user/title.pug', { titleCounter: titleCounter++ })
+    .replace('#title', '/user/title.pug', { titleCounter: titleCounter++ })
     .render()
 })
 
@@ -42,8 +42,8 @@ router.get('/multi', (
   _next: express.NextFunction
 ) => {
   req.partials()
-    .add('#output', '/user/time.pug')
-    .add('#title', '/user/title.pug', { titleCounter: titleCounter++ })
+    .inner('#output', '/user/time.pug')
+    .replace('#title', '/user/title.pug', { titleCounter: titleCounter++ })
     .render()
 })
 
@@ -56,7 +56,7 @@ router.post('/messages', (
   const partials = req.partials()
   if (!message || message.length === 0) {
     return partials
-      .add('form', '/user/form.pug', {
+      .replace('form', '/user/form.pug', {
         message, err: { errors: [{ message: 'メッセージは必須です' }] }
       })
       .render()
@@ -65,8 +65,8 @@ router.post('/messages', (
   messages.push(message)
 
   partials
-    .add('ul.messages', '/user/message.pug', { message })
-    .add('form', '/user/form.pug')
+    .appendChild('ul.messages', '/user/message.pug', { message })
+    .replace('form', '/user/form.pug')
     .render()
 })
 
