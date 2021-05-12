@@ -3,6 +3,8 @@ import pug from 'pug'
 import path from 'path'
 import { Protocol } from './protocols'
 
+export const ContentType = 'application/partial+json'
+
 class PartialRenderer {
   private req: express.Request
   private res: express.Response
@@ -35,6 +37,10 @@ class PartialRenderer {
     throw new Error('Unimplemented')
   }
 
+  insertBefore(selector: string, view: string, _options = {}): PartialRenderer {
+    throw new Error('Unimplemented')
+  }
+
   remove(selector: string, view: string, _options = {}): PartialRenderer {
     throw new Error('Unimplemented')
   }
@@ -43,7 +49,8 @@ class PartialRenderer {
     return this.add(selector, 'replace', view, options);
   }
 
-  render():void {
+  send():void {
+    this.res.set('Content-Type', ContentType)
     this.res.json(this.ret)
   }
 }
