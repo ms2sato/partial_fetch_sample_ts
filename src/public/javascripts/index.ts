@@ -39,44 +39,40 @@ async function partial(
   path: string,
   options: RequestInit = {}
 ) {
-  try {
-    const res = await fetch(path, options)
+  const res = await fetch(path, options)
 
-    if (res.redirected) {
-      window.location.assign(res.url)
-      return
-    }
-
-    const contentType = res.headers.get('Content-Type')
-    if (!contentType) {
-      throw new Error("Content-Type not found")
-    }
-
-    if (!contentType.includes(ContentType)) {
-      // nop
-      console.debug(`Content-Type missmatch: ${contentType}`)
-      return
-    }
-
-    const { effects } = await res.json() as Protocol
-    for (const [selector, effect] of Object.entries(effects)) {
-      const { html, action } = effect
-
-      const actionFunc: Action = actions[action as ActionNames]
-      if (!action) {
-        throw new Error(`"${action}" is not found in partial.actions`)
-      }
-
-      const element = document.querySelector(selector)
-      if (!element) {
-        throw new Error(`"${selector}" is not found in document`)
-      }
-      actionFunc(element as HTMLElement, html)
-    }
-
-  } catch (err) {
-    console.log(err)
+  if (res.redirected) {
+    window.location.assign(res.url)
+    return
   }
+
+  const contentType = res.headers.get('Content-Type')
+  if (!contentType) {
+    throw new Error("Content-Type not found")
+  }
+
+  if (!contentType.includes(ContentType)) {
+    // nop
+    console.debug(`Content-Type missmatch: ${contentType}`)
+    return
+  }
+
+  const { effects } = await res.json() as Protocol
+  for (const [selector, effect] of Object.entries(effects)) {
+    const { html, action } = effect
+
+    const actionFunc: Action = actions[action as ActionNames]
+    if (!action) {
+      throw new Error(`"${action}" is not found in partial.actions`)
+    }
+
+    const element = document.querySelector(selector)
+    if (!element) {
+      throw new Error(`"${selector}" is not found in document`)
+    }
+    actionFunc(element as HTMLElement, html)
+  }
+
 }
 
 async function partialForm(

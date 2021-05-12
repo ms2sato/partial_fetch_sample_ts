@@ -49,7 +49,7 @@ router.get('/multi', (
 
 router.post('/messages', (
   req: express.Request,
-  res: express.Response,
+  _res: express.Response,
   _next: express.NextFunction
 ) => {
   const message = (req.body as Record<string, string>).message
@@ -63,7 +63,7 @@ router.post('/messages', (
 
   messages.push(message)
 
-  return res.redirect('/users')
+  // return res.redirect('/users')
 
   req.partials()
     .appendChild('ul.messages', '/user/message.pug', { message })
