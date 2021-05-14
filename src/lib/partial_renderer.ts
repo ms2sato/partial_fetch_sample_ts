@@ -16,7 +16,7 @@ class PartialRenderer {
     this.ret = { effects: {} }
   }
 
-  add(selector: string, action: string, view: string, options = {}):PartialRenderer {
+  add(selector: string, action: string, view: string, options = {}): PartialRenderer {
     const viewPath = (this.req.app.settings as Record<string, string>).views
 
     const templatePath = path.join(viewPath, view)
@@ -49,18 +49,18 @@ class PartialRenderer {
     return this.add(selector, 'replace', view, options);
   }
 
-  send():void {
+  send(): void {
     this.res.set('Content-Type', ContentType)
     this.res.json(this.ret)
   }
 }
 
-function partialRenderer() {
+function partialRenderer(): express.RequestHandler {
   return (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
-  ):void => {
+  ): void => {
     // eslint-disable-next-line
     (req as any).partials = () => {
       return new PartialRenderer(req, res)

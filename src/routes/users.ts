@@ -10,38 +10,34 @@ const messages: string[] = [
 /* GET users listing. */
 router.get("/", (
   _req: express.Request,
-  res: express.Response,
-  _next: express.NextFunction,
+  res: express.Response
 ) => {
   res.render('user', { titleCounter: titleCounter++, messages })
 })
 
 router.get('/time', (
   req: express.Request,
-  _res: express.Response,
-  _next: express.NextFunction
+  res: express.Response
 ) => {
-  req.partials()
+  res.partials()
     .inner('#output', '/user/time.pug')
     .send()
 })
 
 router.get('/title', (
   req: express.Request,
-  _res: express.Response,
-  _next: express.NextFunction
+  res: express.Response
 ) => {
-  req.partials()
+  res.partials()
     .replace('#title', '/user/title.pug', { titleCounter: titleCounter++ })
     .send()
 })
 
 router.get('/multi', (
   req: express.Request,
-  _res: express.Response,
-  _next: express.NextFunction
+  res: express.Response
 ) => {
-  req.partials()
+  res.partials()
     .inner('#output', '/user/time.pug')
     .replace('#title', '/user/title.pug', { titleCounter: titleCounter++ })
     .send()
@@ -49,12 +45,11 @@ router.get('/multi', (
 
 router.post('/messages', (
   req: express.Request,
-  _res: express.Response,
-  _next: express.NextFunction
+  res: express.Response
 ) => {
   const message = (req.body as Record<string, string>).message
   if (!message || message.length === 0) {
-    return req.partials()
+    return res.partials()
       .replace('form', '/user/form.pug', {
         message, err: { errors: [{ message: 'メッセージは必須です' }] }
       })
@@ -65,7 +60,7 @@ router.post('/messages', (
 
   // return res.redirect('/users')
 
-  req.partials()
+  res.partials()
     .appendChild('ul.messages', '/user/message.pug', { message })
     .replace('form', '/user/form.pug')
     .send()
