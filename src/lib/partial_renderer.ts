@@ -3,7 +3,7 @@ import pug from 'pug'
 import path from 'path'
 import { Protocol } from './protocols'
 
-export const ContentType = 'application/partial+json'
+export const contentType = 'application/partial+json'
 
 class PartialRenderer {
   private req: express.Request
@@ -50,7 +50,7 @@ class PartialRenderer {
   }
 
   send(): void {
-    this.res.set('Content-Type', ContentType)
+    this.res.set('Content-Type', contentType)
     this.res.json(this.ret)
   }
 }

@@ -1,5 +1,5 @@
 import { Protocol } from '../../lib/protocols'
-export const ContentType = 'application/partial+json'
+export const contentType = 'application/partial+json'
 
 function textToNode(text: string) {
   const template = document.createElement("template")
@@ -51,7 +51,7 @@ async function partial(
     throw new Error("Content-Type not found")
   }
 
-  if (!contentType.includes(ContentType)) {
+  if (!contentType.includes(contentType)) {
     // nop
     console.debug(`Content-Type missmatch: ${contentType}`)
     return
