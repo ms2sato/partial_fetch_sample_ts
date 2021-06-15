@@ -61,8 +61,9 @@ function partialRenderer(): express.RequestHandler {
     res: express.Response,
     next: express.NextFunction
   ): void => {
+    console.log('partianRenderer')
     // eslint-disable-next-line
-    (req as any).partials = () => {
+    res.partials = () => {
       return new PartialRenderer(req, res)
     }
     next()

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "DEBUG=simple-bbs:* nodemon ./bin/www",
+    "dev": "npm run build & DEBUG=simple-bbs:* nodemon ./bin/www",
     "build": "npm run clean & tsc & npm run copy-files",
     "watch": "tsc --watch",
     "lint": "npx eslint ./src",
