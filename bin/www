@@ -4,7 +4,9 @@
  * Module dependencies.
  */
 
-var app = require('../dist/app');
+var path = require('path')
+
+var app = require(path.join(__dirname, '../dist/app'));
 var debug = require('debug')('simple-bbs:server');
 var http = require('http');
 

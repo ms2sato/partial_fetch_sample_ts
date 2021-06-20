@@ -13,7 +13,7 @@ class PartialRenderer {
   constructor(req: express.Request, res: express.Response) {
     this.req = req
     this.res = res
-    this.ret = { effects: {} }
+    this.ret = { effects: [] }
   }
 
   add(selector: string, action: string, view: string, options = {}): PartialRenderer {
@@ -21,7 +21,7 @@ class PartialRenderer {
 
     const templatePath = path.join(viewPath, view)
     const html = pug.renderFile(templatePath, options)
-    this.ret.effects[selector] = { html, action }
+    this.ret.effects.push({ selector, html, action })
     return this
   }
 
