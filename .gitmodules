@@ -1,0 +1,3 @@
+[submodule "src/public/javascripts/partial_fetch"]
+	path = src/public/javascripts/partial_fetch
+	url = https://github.com/ms2sato/partial_fetch.git

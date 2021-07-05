@@ -5,22 +5,28 @@ import { Protocol } from './protocols'
 
 export const contentType = 'application/partial+json'
 
+interface TemplateRenderer {
+  (templatePath: string, options: unknown): string
+}
+
 class PartialRenderer {
   private req: express.Request
   private res: express.Response
   private ret: Protocol
+  private renderFunc: TemplateRenderer
 
-  constructor(req: express.Request, res: express.Response) {
+  constructor(req: express.Request, res: express.Response, renderFunc: TemplateRenderer) {
     this.req = req
     this.res = res
     this.ret = { effects: [] }
+    this.renderFunc = renderFunc
   }
 
   add(selector: string, action: string, view: string, options = {}): PartialRenderer {
     const viewPath = (this.req.app.settings as Record<string, string>).views
 
     const templatePath = path.join(viewPath, view)
-    const html = pug.renderFile(templatePath, options)
+    const html = this.renderFunc(templatePath, options)
     this.ret.effects.push({ selector, html, action })
     return this
   }
@@ -55,16 +61,19 @@ class PartialRenderer {
   }
 }
 
-function partialRenderer(): express.RequestHandler {
+function renderPug(templatePath: string, options:unknown = {}) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return pug.renderFile(templatePath, options as any)
+}
+
+function partialRenderer(renderFunc = renderPug): express.RequestHandler {
   return (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ): void => {
-    console.log('partianRenderer')
-    // eslint-disable-next-line
     res.partials = () => {
-      return new PartialRenderer(req, res)
+      return new PartialRenderer(req, res, renderFunc)
     }
     next()
   }

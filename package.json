@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "npm run build & DEBUG=simple-bbs:* nodemon ./bin/www",
+    "dev": "DEBUG=simple-bbs:* nodemon ./bin/www",
     "build": "npm run clean & tsc & npm run copy-files",
     "watch": "tsc --watch",
     "lint": "npx eslint ./src",
     "clean": "rimraf dist/",
-    "copy-files": "copyfiles -u 1 src/public/**/*.html src/public/**/*.css src/public/javascripts/*.js src/public/images/*.* dist/"
+    "copy-files": "copyfiles -u 1 src/public/**/*.html src/public/**/*.css src/public/javascripts/**/*.js src/public/images/*.* dist/"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
