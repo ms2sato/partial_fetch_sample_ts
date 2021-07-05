@@ -3,8 +3,8 @@ const router = express.Router()
 
 let titleCounter = 0
 const messages: string[] = [
-  'テスト1',
-  'テスト2'
+  'test1',
+  'test2'
 ]
 
 /* GET users listing. */
@@ -51,7 +51,7 @@ router.post('/messages', (
   if (!message || message.length === 0) {
     return res.partials()
       .replace('form', '/user/form.pug', {
-        message, err: { errors: [{ message: 'メッセージは必須です' }] }
+        message, err: { errors: [{ message: 'message required' }] }
       })
       .send()
   }

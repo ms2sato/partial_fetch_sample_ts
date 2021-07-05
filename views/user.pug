@@ -3,13 +3,13 @@ extends layout
 block content
   include ./user/title
 
-  button(onClick="partial('/users/time')") 押すとtime更新
-  button(onClick="partial('/users/multi')") 押すとマルチ更新
+  button(onClick="partial('/users/time')") reload time
+  button(onClick="partial('/users/multi')") reload multiple
 
   #output
     include ./user/time
 
-  h2 フォーム
+  h2 Sample Form
 
   include ./user/form
 
