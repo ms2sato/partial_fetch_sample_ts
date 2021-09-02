@@ -6,9 +6,9 @@ import path from "path";
 import cookieParser from "cookie-parser"
 import { default as logger } from "morgan"
 import d from 'debug'
-const debug: d.Debugger = d.debug('simple-bbs:server:params')
+const debug: d.Debugger = d.debug('partial-fetch-sample:server:params')
 
-import { partialRenderer } from './lib/partial_renderer'
+import { partialRenderer } from 'partial-fetch-express'
 
 import { default as indexRouter } from "./routes/index"
 import { default as usersRouter } from "./routes/users"

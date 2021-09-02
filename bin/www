@@ -7,7 +7,7 @@
 var path = require('path')
 
 var app = require(path.join(__dirname, '../dist/app'));
-var debug = require('debug')('simple-bbs:server');
+var debug = require('debug')('partial-fetch-sample:server');
 var http = require('http');
 
 /**
